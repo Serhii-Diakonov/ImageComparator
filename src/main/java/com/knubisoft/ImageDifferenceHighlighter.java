@@ -6,9 +6,9 @@ import java.util.*;
 import java.util.List;
 
 public class ImageDifferenceHighlighter {
+
+    //Distance between points to add them into separate groups
     private static int maxCapturingDistance = 200;
-    private static Map<Point, Color> imgInfo1;
-    private static Map<Point, Color> imgInfo2;
     private static List<Point> differentPoints;
 
     public static BufferedImage highlightDifference(BufferedImage img1, BufferedImage img2) {
@@ -17,41 +17,59 @@ public class ImageDifferenceHighlighter {
 
     public static BufferedImage highlightDifference(BufferedImage img1, BufferedImage img2, String newName) {
         if (hasSameDimensions(img1, img2)) {
-            extractColorData(img1, img2);
-            collectDifferentPoints();
-            splitPointsIntoGroups();
-            return null;
+            collectDifferentPoints(img1, img2);
+            List<List<Point>> groups = splitPointsIntoGroups();
+            return highlightGroups(groups, img2);
         } else {
             return null;
         }
+    }
+
+    private static BufferedImage highlightGroups(List<List<Point>> groups, BufferedImage img2) {
+        for (List<Point> group : groups) {
+            int maxX = Collections.max(group, Comparator.comparingInt(o -> o.x)).x;
+            int minX = Collections.min(group, Comparator.comparingInt(o -> o.x)).x;
+            int maxY = Collections.max(group, Comparator.comparingInt(o -> o.y)).y;
+            int minY = Collections.max(group, Comparator.comparingInt(o -> o.y)).y;
+            Graphics2D graphics = img2.createGraphics();
+            graphics.setColor(new Color(255, 0, 0));
+            graphics.setStroke(new BasicStroke(4));
+            graphics.drawRect(minX, minY, maxX-minX, maxY-minY);
+        }
+        return img2;
     }
 
     public static void setMaxCapturingDistance(int maxCapturingDistance) {
         ImageDifferenceHighlighter.maxCapturingDistance = maxCapturingDistance;
     }
 
-    private static void splitPointsIntoGroups() {
+    private static List<List<Point>> splitPointsIntoGroups() {
+        List<List<Point>> groups = new ArrayList<>();
+        groups.add(new ArrayList<>());
         for (Point point : differentPoints) {
-            
-        }
-    }
-
-    private static void collectDifferentPoints() {
-        differentPoints = new ArrayList<>();
-        imgInfo1.forEach((point, color) -> {
-            if (!imgInfo2.get(point).equals(color)) {
-                differentPoints.add(point);
+            for (List<Point> group : groups) {
+                for (Point groupedPoint : group) {
+                    if (groupedPoint.distance(point) < maxCapturingDistance) {
+                        group.add(point);
+                        break;
+                    } else if (group.indexOf(groupedPoint) == group.size() - 1) {
+                        List<Point> newGroup = new ArrayList<>();
+                        newGroup.add(point);
+                        groups.add(group);
+                    }
+                }
             }
-        });
+        }
+        return groups;
     }
 
-    private static void extractColorData(BufferedImage img1, BufferedImage img2) {
-        imgInfo1 = new LinkedHashMap<>();
-        imgInfo2 = new LinkedHashMap<>();
+    private static void collectDifferentPoints(BufferedImage img1, BufferedImage img2) {
+        differentPoints = new ArrayList<>();
         for (int y = 0; y < img1.getHeight(); y++) {
             for (int x = 0; x < img1.getWidth(); x++) {
-                imgInfo1.put(new Point(x, y), new Color(img1.getRGB(x, y), true));
-                imgInfo2.put(new Point(x, y), new Color(img2.getRGB(x, y), true));
+                if (img1.getRGB(x, y) != img2.getRGB(x, y)) {
+                    differentPoints.add(new Point(x, y));
+                }
             }
         }
     }

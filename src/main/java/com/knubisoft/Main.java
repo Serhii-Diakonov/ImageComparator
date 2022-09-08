@@ -25,7 +25,9 @@ public class Main {
         BufferedImage result = ImageIO.read(file2);
 
 
-        int firstX = inputImage1.getWidth(), firstY = inputImage1.getHeight();
+        ImageIO.write(ImageDifferenceHighlighter.highlightDifference(inputImage1, inputImage2), "jpg", new File("result.jpg"));
+
+       /* int firstX = inputImage1.getWidth(), firstY = inputImage1.getHeight();
         int lastX = 0, lastY = 0;
         Map<Point, Point> rectData = new LinkedHashMap<>();
         for (Map.Entry<Point, Color> pointColorEntry : imgInfo1.entrySet()) {
@@ -49,10 +51,10 @@ public class Main {
         Graphics2D graphics = result.createGraphics();
         graphics.setColor(new Color(255, 0, 0));
         graphics.setStroke(new BasicStroke(4));
-        drawExpandedRect(firstX, firstY, lastX, lastY, graphics);
+        drawExpandedRect(firstX, firstY, lastX, lastY, graphics);*/
 
-        String imageExtension = file1.getName().split("\\.")[1];
-        ImageIO.write(result, imageExtension, new File("result." + imageExtension));
+//        String imageExtension = file1.getName().split("\\.")[1];
+//        ImageIO.write(result, imageExtension, new File("result." + imageExtension));
     }
 
     private static void drawExpandedRect(int firstX, int firstY, int lastX, int lastY, Graphics2D graphics) {
