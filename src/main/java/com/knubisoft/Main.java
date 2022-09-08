@@ -24,14 +24,7 @@ public class Main {
         BufferedImage inputImage2 = ImageIO.read(file2);
         BufferedImage result = ImageIO.read(file2);
 
-        if (inputImage1.getWidth() == inputImage2.getWidth() && inputImage1.getHeight() == inputImage2.getHeight()) {
-            for (int y = 0; y < inputImage1.getHeight(); y++) {
-                for (int x = 0; x < inputImage1.getWidth(); x++) {
-                    imgInfo1.put(new Point(x, y), new Color(inputImage1.getRGB(x, y), true));
-                    imgInfo2.put(new Point(x, y), new Color(inputImage2.getRGB(x, y), true));
-                }
-            }
-        }
+
         int firstX = inputImage1.getWidth(), firstY = inputImage1.getHeight();
         int lastX = 0, lastY = 0;
         Map<Point, Point> rectData = new LinkedHashMap<>();
