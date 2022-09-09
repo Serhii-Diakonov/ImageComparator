@@ -23,8 +23,8 @@ public class ImageDifferenceHighlighter {
 
     public BufferedImage highlightDifference(BufferedImage defaultImg, BufferedImage changedImg, String newName) {
         if (hasSameDimensions(defaultImg, changedImg)) {
-            collectDifferentPoints(defaultImg, changedImg);
-            List<List<Point>> groups = splitPointsIntoGroups();
+            List<List<Point>> groups = collectDifferentPoints(defaultImg, changedImg);
+//            List<List<Point>> groups = splitPointsIntoGroups();
             return highlightGroups(groups, changedImg);
         } else {
             return null;
@@ -78,39 +78,45 @@ public class ImageDifferenceHighlighter {
         List<List<Point>> groups = new ArrayList<>();
         groups.add(new ArrayList<>());
         for (Point point : differentPoints) {
-            for (int i = 0; i < groups.size(); i++) {
-                curGroup = groups.get(i);
-                if (curGroup.isEmpty()) {
-                    curGroup.add(point);
-                } else {
-                    for (Point groupedPoint : curGroup) {
-                        if (groupedPoint.distance(point) <= maxCapturingDistance) {
-                            if (!curGroup.contains(point)) {
-                                curGroup.add(point);
-                            }
-                            break;
-                        } else if (groups.get(groups.size() - 1) == curGroup &&
-                                curGroup.get(curGroup.size() - 1) == groupedPoint) {
-                            List<Point> newGroup = new ArrayList<>();
-                            newGroup.add(point);
-                            groups.add(newGroup);
-                        }
-                    }
-                }
-            }
         }
         return groups;
     }
 
-    private void collectDifferentPoints(BufferedImage defaultImg, BufferedImage changedImg) {
-        differentPoints = new ArrayList<>();
+    private List<List<Point>> collectDifferentPoints(BufferedImage defaultImg, BufferedImage changedImg) {
+        List<Point> curGroup;
+        List<List<Point>> groups = new ArrayList<>();
+        groups.add(new ArrayList<>());
+//        differentPoints = new ArrayList<>();
         for (int y = 0; y < defaultImg.getHeight(); y++) {
             for (int x = 0; x < defaultImg.getWidth(); x++) {
                 if (defaultImg.getRGB(x, y) != changedImg.getRGB(x, y)) {
-                    differentPoints.add(new Point(x, y));
+//                    differentPoints.add(new Point(x, y));
+                    Point point = new Point(x, y);
+                    for (int i = 0; i < groups.size(); i++) {
+                        curGroup = groups.get(i);
+                        if (curGroup.isEmpty()) {
+                            curGroup.add(point);
+                        } else {
+                            for (Point groupedPoint : curGroup) {
+                                if (groupedPoint.distance(point) <= maxCapturingDistance) {
+                                    if (!curGroup.contains(point)) {
+                                        curGroup.add(point);
+                                    }
+                                    break;
+                                } else if (groups.get(groups.size() - 1) == curGroup &&
+                                        curGroup.get(curGroup.size() - 1) == groupedPoint) {
+                                    List<Point> newGroup = new ArrayList<>();
+                                    newGroup.add(point);
+                                    groups.add(newGroup);
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
+        return groups;
     }
 
     private boolean hasSameDimensions(BufferedImage img1, BufferedImage img2) {
