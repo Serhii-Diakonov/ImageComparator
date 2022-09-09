@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9199644e-e6e5-4e88-a6fd-19bacbfb97e8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/knubisoft/ImageDifferenceHighlighter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/knubisoft/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/knubisoft/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/knubisoft/ImageDifferenceHighlighter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/knubisoft/ImageDifferenceHighlighter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +28,13 @@
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
@@ -86,6 +92,7 @@
       <updated>1662455287384</updated>
       <workItem from="1662455289951" duration="4161000" />
       <workItem from="1662497615114" duration="9947000" />
+      <workItem from="1662655391196" duration="1795000" />
     </task>
     <task id="LOCAL-00001" summary="Init commit">
       <created>1662455894030</created>
@@ -118,5 +125,16 @@
     <MESSAGE value="Init commit" />
     <MESSAGE value="Draws a rectangle to absorb all differences" />
     <option name="LAST_COMMIT_MESSAGE" value="Draws a rectangle to absorb all differences" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/knubisoft/ImageDifferenceHighlighter.java</url>
+          <line>31</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

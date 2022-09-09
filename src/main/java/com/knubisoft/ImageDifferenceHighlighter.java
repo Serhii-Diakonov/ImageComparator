@@ -2,7 +2,9 @@ package com.knubisoft;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ImageDifferenceHighlighter {
@@ -34,7 +36,7 @@ public class ImageDifferenceHighlighter {
             Graphics2D graphics = img2.createGraphics();
             graphics.setColor(new Color(255, 0, 0));
             graphics.setStroke(new BasicStroke(4));
-            graphics.drawRect(minX, minY, maxX-minX, maxY-minY);
+            graphics.drawRect(minX, minY, maxX - minX, maxY - minY);
         }
         return img2;
     }
@@ -47,15 +49,19 @@ public class ImageDifferenceHighlighter {
         List<List<Point>> groups = new ArrayList<>();
         groups.add(new ArrayList<>());
         for (Point point : differentPoints) {
-            for (List<Point> group : groups) {
-                for (Point groupedPoint : group) {
-                    if (groupedPoint.distance(point) < maxCapturingDistance) {
-                        group.add(point);
-                        break;
-                    } else if (group.indexOf(groupedPoint) == group.size() - 1) {
-                        List<Point> newGroup = new ArrayList<>();
-                        newGroup.add(point);
-                        groups.add(group);
+            for (int i = 0; i < groups.size(); i++) {
+                if (groups.get(i).isEmpty()) {
+                    groups.get(i).add(point);
+                } else {
+                    for (Point groupedPoint : groups.get(i)) {
+                        if (groupedPoint.distance(point) < maxCapturingDistance) {
+                            groups.get(i).add(point);
+                            break;
+                        } else if (groups.get(i).indexOf(groupedPoint) == groups.get(i).size() - 1) {
+                            List<Point> newGroup = new ArrayList<>();
+                            newGroup.add(point);
+                            groups.add(newGroup);
+                        }
                     }
                 }
             }
