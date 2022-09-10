@@ -18,12 +18,13 @@ public class Main {
 
         ImageDifferenceHighlighter highlighter = new ImageDifferenceHighlighter();
         highlighter.setHighlightColor(new Color(0,0,255));
-        highlighter.setPixelsMissed(4);
+        highlighter.setPixelsMissed(1);
         highlighter.setMaxCapturingDistance(20);
+        highlighter.setStroke(new BasicStroke(1));
 
         BufferedImage result = highlighter.highlightDifference(inputImage1, inputImage2);
         if (result != null) {
-            ImageIO.write(result, "png", new File("result5.png"));
+            ImageIO.write(result, "png", new File("result7.png"));
         }
     }
 }

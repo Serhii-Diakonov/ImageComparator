@@ -1,5 +1,9 @@
 package com.knubisoft;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -7,7 +11,7 @@ import java.util.List;
 
 public class ImageDifferenceHighlighter {
 
-    //Distance between points to add them into separate groups
+    //Maximum distance between points to add them into the same group
     private int maxCapturingDistance = 200;
     private Color highlightColor = new Color(255, 0, 0);
     private Stroke stroke = new BasicStroke(4);
@@ -24,9 +28,31 @@ public class ImageDifferenceHighlighter {
     public BufferedImage highlightDifference(BufferedImage defaultImg, BufferedImage changedImg) {
         if (hasSameDimensions(defaultImg, changedImg)) {
             List<Group> groups = splitPointsIntoGroups(defaultImg, changedImg);
+//            mergeCrossingGroups(groups);
             return highlightGroups(groups, changedImg);
         } else {
             return null;
+        }
+    }
+
+    private void mergeCrossingGroups(List<Group> groups) {
+        boolean isCrossing = false;
+        for (int i = 0; i < groups.size(); i++) {
+            for (int a = 0; a < groups.get(i).size(); a++) {
+                for (int j = 0; j < groups.size(); j++) {
+                    Point point = groups.get(i).get(a);
+                    if (i != j && groups.get(j).stream().anyMatch(p -> p.distance(point) <= maxCapturingDistance)) {
+                        groups.get(j).addAll(groups.get(i));
+                        groups.remove(groups.get(i));
+                        isCrossing = true;
+                        break;
+                    }
+                }
+                if(isCrossing){
+                    isCrossing = false;
+                    break;
+                }
+            }
         }
     }
 
@@ -90,6 +116,7 @@ public class ImageDifferenceHighlighter {
                 }
             }
         }
+        mergeCrossingGroups(groups);
         return groups;
     }
 
@@ -114,4 +141,28 @@ public class ImageDifferenceHighlighter {
 
     private static class Group extends ArrayList<Point> {
     }
+
+    /*@Getter
+    @Setter
+    @AllArgsConstructor
+    private static class Point{
+        int x;
+        int y;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Point point = (Point) o;
+            if (x != point.x) return false;
+            return y == point.y;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = x;
+            result = 31 * result + y;
+            return result;
+        }
+    }*/
 }
