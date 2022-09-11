@@ -1,7 +1,7 @@
 package com.knubisoft;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.awt.*;
@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class ImageDifferenceHighlighter {
 
     //Maximum distance between points to add them into the same group
@@ -28,7 +31,6 @@ public class ImageDifferenceHighlighter {
     public BufferedImage highlightDifference(BufferedImage defaultImg, BufferedImage changedImg) {
         if (hasSameDimensions(defaultImg, changedImg)) {
             List<Group> groups = splitPointsIntoGroups(defaultImg, changedImg);
-//            mergeCrossingGroups(groups);
             return highlightGroups(groups, changedImg);
         } else {
             return null;
@@ -48,32 +50,12 @@ public class ImageDifferenceHighlighter {
                         break;
                     }
                 }
-                if(isCrossing){
+                if (isCrossing) {
                     isCrossing = false;
                     break;
                 }
             }
         }
-    }
-
-    public void setMaxCapturingDistance(int maxCapturingDistance) {
-        this.maxCapturingDistance = maxCapturingDistance;
-    }
-
-    public void setHighlightColor(Color highlightColor) {
-        this.highlightColor = highlightColor;
-    }
-
-    public void setStroke(Stroke stroke) {
-        this.stroke = stroke;
-    }
-
-    public void setExpandWidth(int expandWidth) {
-        this.expandWidth = expandWidth;
-    }
-
-    public void setExpandHeight(int expandHeight) {
-        this.expandHeight = expandHeight;
     }
 
     private BufferedImage highlightGroups(List<Group> groups, BufferedImage img) {
@@ -98,20 +80,23 @@ public class ImageDifferenceHighlighter {
         graphics.drawRect(minX, minY, maxX - minX, maxY - minY);
     }
 
-    public void setPixelsMissed(int pixelsMissed) {
-        this.pixelsMissed = Math.max(pixelsMissed, 1);
-    }
-
     private List<Group> splitPointsIntoGroups(BufferedImage defaultImg, BufferedImage changedImg) {
         List<Group> groups = new ArrayList<>();
         for (int y = 0; y < defaultImg.getHeight(); y += pixelsMissed) {
             for (int x = 0; x < defaultImg.getWidth(); x += pixelsMissed) {
                 if (defaultImg.getRGB(x, y) != changedImg.getRGB(x, y)) {
                     Point point = new Point(x, y);
-                    Group group = findGroupForPoint(groups, point).orElse(new Group());
-                    group.add(point);
-                    if (!groups.contains(group)) {
-                        groups.add(group);
+                    List<Group> groupsForPoint = findGroupsForPoint(groups, point).
+                            orElse(Collections.singletonList(new Group()));
+                    if (groupsForPoint.size() > 1) {
+                        for (int i = 1; i < groupsForPoint.size(); i++) {
+                            groupsForPoint.get(0).addAll(groupsForPoint.get(i));
+                        }
+                    }
+                    Group groupForPoint = groupsForPoint.get(0);
+                    groupForPoint.add(point);
+                    if (!groups.contains(groupForPoint)) {
+                        groups.add(groupForPoint);
                     }
                 }
             }
@@ -120,19 +105,23 @@ public class ImageDifferenceHighlighter {
         return groups;
     }
 
-    private Optional<Group> findGroupForPoint(List<Group> groups, Point point) {
-        Group curGroup;
-        for (int i = 0; i < groups.size(); i++) {
-            curGroup = groups.get(i);
-            for (Point groupedPoint : curGroup) {
+    private Optional<List<Group>> findGroupsForPoint(List<Group> groups, Point point) {
+        List<Group> foundGroups = new ArrayList<>();
+        for (Group group : groups) {
+            for (Point groupedPoint : group) {
                 if (groupedPoint.distance(point) <= maxCapturingDistance) {
-                    return Optional.of(curGroup);
-                } else if (groups.get(groups.size() - 1) == curGroup && curGroup.get(curGroup.size() - 1) == groupedPoint) {
-                    return Optional.empty();
+                    if (!foundGroups.contains(group)) {
+                        foundGroups.add(group);
+                        break;
+                    }
                 }
             }
         }
-        return Optional.empty();
+        if (foundGroups.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(foundGroups);
+        }
     }
 
     private boolean hasSameDimensions(BufferedImage img1, BufferedImage img2) {
@@ -141,28 +130,4 @@ public class ImageDifferenceHighlighter {
 
     private static class Group extends ArrayList<Point> {
     }
-
-    /*@Getter
-    @Setter
-    @AllArgsConstructor
-    private static class Point{
-        int x;
-        int y;
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Point point = (Point) o;
-            if (x != point.x) return false;
-            return y == point.y;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = x;
-            result = 31 * result + y;
-            return result;
-        }
-    }*/
 }

@@ -24,7 +24,7 @@ public class Main {
 
         BufferedImage result = highlighter.highlightDifference(inputImage1, inputImage2);
         if (result != null) {
-            ImageIO.write(result, "png", new File("result7.png"));
+            ImageIO.write(result, "png", new File("result10.png"));
         }
     }
 }

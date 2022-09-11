@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9199644e-e6e5-4e88-a6fd-19bacbfb97e8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/knubisoft/ImageDifferenceHighlighter.java" afterDir="false" />
+    <list default="true" id="9199644e-e6e5-4e88-a6fd-19bacbfb97e8" name="Changes" comment="Group merging is done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/knubisoft/ImageDifferenceHighlighter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/knubisoft/ImageDifferenceHighlighter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/knubisoft/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/knubisoft/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,7 +25,15 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.jdks/openjdk-18.0.2.1/lib/src.zip!/java.base/java/lang/NullPointerException.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -39,18 +47,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/#JAVA/ImageComparator/src/main/resources&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Git/ImageComparator/pom.xml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\#JAVA\ImageComparator\src\main\resources" />
@@ -86,6 +100,7 @@
       <updated>1662455287384</updated>
       <workItem from="1662455289951" duration="4161000" />
       <workItem from="1662497615114" duration="9947000" />
+      <workItem from="1662884363822" duration="11471000" />
     </task>
     <task id="LOCAL-00001" summary="Init commit">
       <created>1662455894030</created>
@@ -108,15 +123,85 @@
       <option name="project" value="LOCAL" />
       <updated>1662533007366</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Draws a rectangle to absorb all differences">
+      <created>1662654281304</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1662654281304</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Fixed rectangles, refactoring is needed">
+      <created>1662707783655</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1662707783655</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Fixed rectangles, refactoring is needed">
+      <created>1662709499105</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1662709499105</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Code refactoring finished, code review needed">
+      <created>1662718622413</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1662718622413</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Group merging is done">
+      <created>1662826620551</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1662826620551</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Group merging is done">
+      <created>1662826900418</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1662826900418</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Group merging is done">
+      <created>1662826979284</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1662826979284</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Group merging is done">
+      <created>1662827139388</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1662827139388</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Init commit" />
     <MESSAGE value="Draws a rectangle to absorb all differences" />
-    <option name="LAST_COMMIT_MESSAGE" value="Draws a rectangle to absorb all differences" />
+    <MESSAGE value="Fixed rectangles, refactoring is needed" />
+    <MESSAGE value="Code refactoring finished, code review needed" />
+    <MESSAGE value="Group merging is done" />
+    <option name="LAST_COMMIT_MESSAGE" value="Group merging is done" />
   </component>
 </project>
