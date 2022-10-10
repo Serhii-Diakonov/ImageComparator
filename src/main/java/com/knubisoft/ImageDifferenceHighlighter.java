@@ -1,5 +1,9 @@
 package com.knubisoft;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -7,80 +11,191 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Class for highlighting regions which are different for two pictures
+ */
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class ImageDifferenceHighlighter {
+    /**
+     * Maximum distance between points to add them into the same group
+     */
+    private int maxCapturingDistance = 200;
+    /**
+     * Stroke color of highlighted regions
+     */
+    private Color highlightColor = new Color(255, 0, 0);
+    /**
+     * Stroke width of highlighted regions
+     */
+    private Stroke stroke = new BasicStroke(4);
+    /**
+     * Number of pixels for width offset in both sides
+     */
+    private int expandWidth = 10;
+    /**
+     * Number of pixels for height offset in both sides
+     */
+    private int expandHeight = 10;
+    /**
+     * Number of pixels to be missed for speed improving
+     * Causes accuracy reducing
+     * */
+    private int pixelsMissed = 1;
 
-    //Distance between points to add them into separate groups
-    private static int maxCapturingDistance = 200;
-    private static List<Point> differentPoints;
-
-    public static BufferedImage highlightDifference(BufferedImage img1, BufferedImage img2) {
-        return highlightDifference(img1, img2, null);
-    }
-
-    public static BufferedImage highlightDifference(BufferedImage img1, BufferedImage img2, String newName) {
-        if (hasSameDimensions(img1, img2)) {
-            collectDifferentPoints(img1, img2);
-            List<List<Point>> groups = splitPointsIntoGroups();
-            return highlightGroups(groups, img2);
+    /**
+     * Highlights all regions which are different for two pictures.
+     * @param defaultImg First BufferedImage
+     * @param changedImg Second BufferedImage which are almost equals to the first one except several minor differences
+     * @return BufferedImage of the default BufferedImage with highlighted regions
+     */
+    public BufferedImage highlightDifference(BufferedImage defaultImg, BufferedImage changedImg) {
+        if (hasSameDimensions(defaultImg, changedImg)) {
+            List<Group> groups = splitPointsIntoGroups(defaultImg, changedImg);
+            return highlightGroups(groups, changedImg);
         } else {
             return null;
         }
     }
 
-    private static BufferedImage highlightGroups(List<List<Point>> groups, BufferedImage img2) {
-        for (List<Point> group : groups) {
+    /**
+     * Merges several groups into the one group
+     * if the distance between points of these groups are not greater then {@link ImageDifferenceHighlighter#maxCapturingDistance}.
+     * @param groups {@code List} of {@link Group} of pixels which pixels are different in two images
+     */
+    private void mergeCrossingGroups(List<Group> groups) {
+        boolean isCrossing = false;
+        for (int i = 0; i < groups.size(); i++) {
+            for (int a = 0; a < groups.get(i).size(); a++) {
+                for (int j = 0; j < groups.size(); j++) {
+                    Point point = groups.get(i).get(a);
+                    if (i != j && groups.get(j).stream().anyMatch(p -> p.distance(point) <= maxCapturingDistance)) {
+                        groups.get(j).addAll(groups.get(i));
+                        groups.remove(groups.get(i));
+                        isCrossing = true;
+                        break;
+                    }
+                }
+                if (isCrossing) {
+                    isCrossing = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Distinguishes all required points for each group to further highlighting.
+     * @param groups List of Group of points which pixels are different in two images and should be highlighted
+     * @param img BufferedImage on which highlighting should be applied
+     * @return BufferedImage with applied highlighting (regions with differences are restricted with a rectangle(s))
+     */
+    private BufferedImage highlightGroups(List<Group> groups, BufferedImage img) {
+        for (Group group : groups) {
             int maxX = Collections.max(group, Comparator.comparingInt(o -> o.x)).x;
             int minX = Collections.min(group, Comparator.comparingInt(o -> o.x)).x;
             int maxY = Collections.max(group, Comparator.comparingInt(o -> o.y)).y;
-            int minY = Collections.max(group, Comparator.comparingInt(o -> o.y)).y;
-            Graphics2D graphics = img2.createGraphics();
-            graphics.setColor(new Color(255, 0, 0));
-            graphics.setStroke(new BasicStroke(4));
-            graphics.drawRect(minX, minY, maxX - minX, maxY - minY);
+            int minY = Collections.min(group, Comparator.comparingInt(o -> o.y)).y;
+            drawExpandedImageRegion(img, maxX, minX, maxY, minY);
+
         }
-        return img2;
+        return img;
     }
 
-    public static void setMaxCapturingDistance(int maxCapturingDistance) {
-        ImageDifferenceHighlighter.maxCapturingDistance = maxCapturingDistance;
+    /**
+     * Draws a rectangle around the region. Its borders are expanded
+     * on {@link ImageDifferenceHighlighter#expandWidth} and {@link ImageDifferenceHighlighter#expandHeight} amounts of pixels.
+     * @param img BufferedImage on which the rectangle should be drawn
+     * @param maxX Right X (abscissa) coordinate
+     * @param minX Left X (abscissa) coordinate
+     * @param maxY Lower Y (ordinate) coordinate
+     * @param minY Upper Y (ordinate) coordinate
+     */
+    private void drawExpandedImageRegion(BufferedImage img, int maxX, int minX, int maxY, int minY) {
+        Graphics2D graphics = img.createGraphics();
+        graphics.setColor(highlightColor);
+        graphics.setStroke(stroke);
+        minX -= expandWidth;
+        maxX += expandWidth;
+        minY -= expandHeight;
+        maxY += expandHeight;
+        graphics.drawRect(minX, minY, maxX - minX, maxY - minY);
     }
 
-    private static List<List<Point>> splitPointsIntoGroups() {
-        List<List<Point>> groups = new ArrayList<>();
-        groups.add(new ArrayList<>());
-        for (Point point : differentPoints) {
-            for (int i = 0; i < groups.size(); i++) {
-                if (groups.get(i).isEmpty()) {
-                    groups.get(i).add(point);
-                } else {
-                    for (Point groupedPoint : groups.get(i)) {
-                        if (groupedPoint.distance(point) < maxCapturingDistance) {
-                            groups.get(i).add(point);
-                            break;
-                        } else if (groups.get(i).indexOf(groupedPoint) == groups.get(i).size() - 1) {
-                            List<Point> newGroup = new ArrayList<>();
-                            newGroup.add(point);
-                            groups.add(newGroup);
+
+    /**
+     * Creates {@link Group} and adds to it points with different color values (RGB model) for each image. In further these {@link Group} are merged if it
+     * is possible and highlighted. If the point is not suitable for any existing {@link Group} than new {@link Group} for the point is created.
+     * @param defaultImg the first BufferedImage
+     * @param changedImg BufferedImage to be compared with the first one
+     * @return {@code List} of {@link Group} of points which contains points with different color values for the first and the second images
+     */
+    private List<Group> splitPointsIntoGroups(BufferedImage defaultImg, BufferedImage changedImg) {
+        List<Group> groups = new ArrayList<>();
+        for (int y = 0; y < defaultImg.getHeight(); y += pixelsMissed) {
+            for (int x = 0; x < defaultImg.getWidth(); x += pixelsMissed) {
+                if (defaultImg.getRGB(x, y) != changedImg.getRGB(x, y)) {
+                    Point point = new Point(x, y);
+                    List<Group> groupsForPoint = findGroupsForPoint(groups, point).
+                            orElse(Collections.singletonList(new Group()));
+                    if (groupsForPoint.size() > 1) {
+                        for (int i = 1; i < groupsForPoint.size(); i++) {
+                            groupsForPoint.get(0).addAll(groupsForPoint.get(i));
                         }
+                    }
+                    Group groupForPoint = groupsForPoint.get(0);
+                    groupForPoint.add(point);
+                    if (!groups.contains(groupForPoint)) {
+                        groups.add(groupForPoint);
                     }
                 }
             }
         }
+        mergeCrossingGroups(groups);
         return groups;
     }
 
-    private static void collectDifferentPoints(BufferedImage img1, BufferedImage img2) {
-        differentPoints = new ArrayList<>();
-        for (int y = 0; y < img1.getHeight(); y++) {
-            for (int x = 0; x < img1.getWidth(); x++) {
-                if (img1.getRGB(x, y) != img2.getRGB(x, y)) {
-                    differentPoints.add(new Point(x, y));
+    /**
+     * Finds {@link Group} which contains at least one point with distance between 
+     * it and a passed point not greater then {@link ImageDifferenceHighlighter#maxCapturingDistance},
+     * in other words {@link Group} which are suitable for the point adding.
+     * @param groups {@code List} of already formed {@link Group} 
+     * @param point Point to be measured distance between it and a point of a {@link Group}
+     * @return {@code List} of {@link Group} for point adding or an empty {@code Optional} 
+     */
+    private Optional<List<Group>> findGroupsForPoint(List<Group> groups, Point point) {
+        List<Group> foundGroups = new ArrayList<>();
+        for (Group group : groups) {
+            for (Point groupedPoint : group) {
+                if (groupedPoint.distance(point) <= maxCapturingDistance) {
+                    if (!foundGroups.contains(group)) {
+                        foundGroups.add(group);
+                        break;
+                    }
                 }
             }
         }
+        if (foundGroups.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(foundGroups);
+        }
     }
 
-    private static boolean hasSameDimensions(BufferedImage img1, BufferedImage img2) {
+    /**
+     * Checks if two images have the same width and height and are valid for further processing.
+     * @param img1 the first BufferedImage for comparison
+     * @param img2 the second BufferedImage for comparison
+     * @return {@code true} if both images have the same width and height, {@code false} otherwise
+     */
+    private boolean hasSameDimensions(BufferedImage img1, BufferedImage img2) {
         return img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight();
+    }
+
+    /**
+     * Class for representing a {@code List} of {@code Point}
+     */
+    private static class Group extends ArrayList<Point> {
     }
 }
