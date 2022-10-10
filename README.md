@@ -1,4 +1,5 @@
 # Image Comparator
+
 **A program for comparing two images and highlighting regions which have different pixels (pixels with different RGB color values).**
 The program uses simple algorithms of comparing each pixel's RGB value of an image with an appropriate pixel of another image. This comparison is done pixel by pixel. Then pixels with different values are added to appropriate groups for creating a region and finally these regions are highlighted.
 ---
