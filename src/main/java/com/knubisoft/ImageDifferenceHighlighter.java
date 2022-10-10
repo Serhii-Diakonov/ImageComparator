@@ -6,7 +6,9 @@ import lombok.Setter;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -96,6 +98,7 @@ public class ImageDifferenceHighlighter {
             int maxY = Collections.max(group, Comparator.comparingInt(o -> o.y)).y;
             int minY = Collections.min(group, Comparator.comparingInt(o -> o.y)).y;
             drawExpandedImageRegion(img, maxX, minX, maxY, minY);
+
         }
         return img;
     }
@@ -119,6 +122,7 @@ public class ImageDifferenceHighlighter {
         maxY += expandHeight;
         graphics.drawRect(minX, minY, maxX - minX, maxY - minY);
     }
+
 
     /**
      * Creates {@link Group} and adds to it points with different color values (RGB model) for each image. In further these {@link Group} are merged if it
