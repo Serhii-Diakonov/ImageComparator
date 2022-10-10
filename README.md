@@ -23,4 +23,5 @@ The program uses simple algorithms of comparing each pixel's RGB value of an ima
 
 ---
 Please, contact me if you have any ideas or questions
+
 Email: *sergeidyakonov222@gmail.com*
